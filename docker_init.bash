@@ -189,6 +189,9 @@ load_env() {
         # Line without '=': whole line is the key with an empty value.
         value=
       fi
+      # Multiline values (e.g. RAILWAY_GIT_COMMIT_MESSAGE) leak continuation
+      # lines into `env | sort` output; skip anything that is not a valid name.
+      if [[ ! "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then continue; fi
       doit=false
       # checking if the key is in the ignorelist
       for i in $ignore_list; do
